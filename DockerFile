@@ -1,0 +1,16 @@
+FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+
+RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+COPY app ./app
+
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+ENV TRANSFORMERS_CACHE=/app/cache
+
+EXPOSE 7860
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
